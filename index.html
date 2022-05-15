@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Pokedex - PokeAPI</title>
+</head>
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			font-family: arial;
+		}
+		body{
+			background: aqua;
+		}
+		.pokemon-boxes{
+			background: #fff;
+			max-width: 900px;
+			padding: .5rem 2%;
+			margin: .5rem auto;
+			border-radius: 1rem;
+			display: flex;
+			flex-flow: row wrap;
+			justify-content: center;
+		}
+		main h1{
+			color: #FECA1B;
+			text-shadow: .5px 1px blue;
+			-webkit-text-stroke-color: #3761A8;
+			-webkit-text-stroke-width: 2px;
+			font-size: 2.5rem;
+			width: 100%;
+			text-align: center;
+			margin: .5rem auto;
+		}
+		.aria-inputs{
+			width: 100%;
+			margin: 1rem auto;
+			text-align: center;
+		}
+		#quantity{
+			width: 17rem;
+			height: 2rem;
+			text-indent: .5rem;
+			border-radius: .3rem;
+			border: solid .5px #000;
+		}
+		.pokemon-single{
+			width: 16rem;
+			height: 18rem;
+			margin: .5rem;
+			background: #ccc;			
+			padding: 1rem;
+			border-radius: .5rem;
+			display: flex;
+			flex-flow: row wrap;
+			justify-content: center;
+			align-items: center;
+		}
+		.pokemon-single img{
+			width: 10rem;
+			height: 10rem;
+		}
+		.name{
+			width: 100%;
+			text-align: center;
+		}
+		@media screen and (max-width: 850px) {
+			.pokemon-single{
+				width: 100%;
+			}
+		}
+	</style>
+<body>
+	<main>
+		<h1>Pokedex</h1>
+		<div class="aria-inputs">
+			<input id="quantity" type="text" placeholder="Select the quantity of pokemons..."/>
+		</div>
+		<div class="pokemon-boxes">
+			
+		</div>
+	</main>
+</body>
+
+<script>
+
+	var quantityInput = document.getElementById("quantity")
+
+	quantityInput.addEventListener('keyup', () => {
+		selectPokemons(quantityInput.value)
+	})
+
+	selectPokemons(2)
+	
+	function selectPokemons(quantity){
+	fetch("https://pokeapi.co/api/v2/pokemon?limit="+quantity)
+	.then(response => response.json())
+	.then(allPokemons =>{
+
+
+		var pokemons = []
+
+		allPokemons.results.map((val)=>{
+
+			fetch(val.url)
+			.then(response => response.json())
+			.then(pokemonSingle =>{
+
+				pokemons.push({name: val.name, image: pokemonSingle.sprites.front_default})
+
+				if(pokemons.length == quantity){
+					console.log(pokemons)
+
+				var pokemonBoxes = document.querySelector('.pokemon-boxes')
+				pokemonBoxes.innerHTML = ""
+
+				pokemons.map((val)=>{
+					pokemonBoxes.innerHTML += `
+						<div class="pokemon-single">
+							<abbr title=`+val.name+`><img src=`+val.image+` alt="pokemon image"/></abbr>
+							<p class="name">`+val.name+`</p>
+						</div>
+					`
+				})
+
+				}
+
+			})
+		})
+
+	})
+	}
+
+</script>
+
+</html>
